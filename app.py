@@ -28,14 +28,14 @@ class ScenesModel(BaseModel):
 
 
 @app.post("/extract-contents/")
-def plan_scences(scene_args: ScenesModel):
+def extract_contents(scene_args: ScenesModel):
     try:
         scenes = []
         for scene in scene_args.scenes:
             scenes.append(Scene(scene.x1,scene.y1,scene.x2,scene.y2,scene.components,scene.zoom_factor))
 
         scenes = document_content_extractor.process(scene_args.input_image,scenes)
-
+        document_content_extractor.convert_to_narrative_form(scenes)
         return {"status": "success", "output": scenes}
     except CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Error: {e.stderr}")
