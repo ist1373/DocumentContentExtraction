@@ -1,6 +1,6 @@
 variables:
   IMAGE_NAME: ilvlan549/genipa
-  IMAGE_TAG: dle-1.0
+  IMAGE_TAG: dce-1.0
 
 stages:
   - test
