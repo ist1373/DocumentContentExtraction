@@ -8,7 +8,7 @@ class Scene:
         self.x2 = x2
         self.y2 = y2
         self.zoom_factor = zoom_factor
-        self.content = ""
+        self.content = []
         self.narrative_content = ""
     def get_coordinates(self):
         return [self.x1,self.y1,self.x2,self.y2]

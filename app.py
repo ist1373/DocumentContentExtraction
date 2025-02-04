@@ -24,23 +24,24 @@ class SceneModel(BaseModel):
 
 class ScenesModel(BaseModel):
     scenes:list[SceneModel]
+    prev_summary:str
     input_image:str
 
 
 @app.post("/extract-contents/")
-def extract_contents(scene_args: ScenesModel):
+def extract_contents(input_args: ScenesModel):
     try:
         scenes = []
-        for scene in scene_args.scenes:
+        for scene in input_args.scenes:
             scenes.append(Scene(scene.x1,scene.y1,scene.x2,scene.y2,scene.components,scene.zoom_factor))
 
-        scenes = document_content_extractor.process(scene_args.input_image,scenes)
-        document_content_extractor.convert_to_narrative_form(scenes)
-        return {"status": "success", "output": scenes}
+        scenes = document_content_extractor.process(input_args.input_image,scenes)
+        scenes,summary = document_content_extractor.convert_to_narrative_form_v3(scenes,prev_summary=input_args.prev_summary)
+        return {"status": "success", "scenes": scenes,"prev_summary":summary}
     except CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Error: {e.stderr}")
 
 if __name__ == "__main__":
 
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+    uvicorn.run(app, host="0.0.0.0", port=8005)
